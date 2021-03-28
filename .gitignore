@@ -1,4 +1,4 @@
 *.o
 *.a
-adbd
-adbd_debug
+/adbd
+/adbd_debug
