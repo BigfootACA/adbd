@@ -1,0 +1,11 @@
+[Unit]
+Description=Android Debug Bridge Daemon
+
+[Service]
+Type=forking
+User=root
+EnvironmentFile=-/etc/default/adbd
+ExecStart=/usr/bin/adbd -d -n "$DEVNAME" -m "$DEVMODEL" -p "$DEVPRODUCT" -b "$BANNER"
+
+[Install]
+WantedBy=multi-user.target

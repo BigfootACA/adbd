@@ -1,0 +1,5 @@
+#ifndef __CUTILS_MISC_H
+#define __CUTILS_MISC_H
+#define FIRST_APPLICATION_UID 10000
+#define LAST_APPLICATION_UID 99999
+#endif
