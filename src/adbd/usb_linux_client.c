@@ -224,7 +224,7 @@ static int bulk_read(int bulk_out,char*buf,size_t length){
 	do{
 		if((ret=adb_read(bulk_out,buf+count,length-count))>=0)count+=ret;
 		else if(errno!=EINTR){
-			printf("adbd: bulk read failed fd %d length %d count %d: %m\n",bulk_out,length,count);
+			printf("adbd: bulk read failed fd %d length %ld count %ld: %m\n",bulk_out,length,count);
 			return ret;
 		}
 	}while(count<length);
