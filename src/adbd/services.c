@@ -141,7 +141,7 @@ static int create_subprocess(const char *cmd,const char *arg0,const char *arg1,p
 		}else printf("adbd: unable to open %s\n",text);
 		char*g;
 		if(!getenv("TERM"))setenv("TERM","xterm-256color",0);
-		if((g=getenv("HOME"))&&cmd==shell)chdir(g);
+		if((g=getenv("HOME"))&&cmd==shell&&chdir(g)<0)fprintf(stderr,"adbd: chdir to %s failed\n",g);
 		execl(cmd,cmd,arg0,arg1,NULL);
 		if(errno>0)fprintf(stderr,"adbd: exec '%s' failed: %m\n",cmd);
 		exit(-1);
