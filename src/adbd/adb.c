@@ -443,12 +443,15 @@ int start_device_log(void){
 		tzset();
 		time(&t);
 		localtime_r(&t,&now);
-		char*tm=malloc(64*sizeof(char*));
-		memset(tm,0,64*sizeof(char*));
-		strftime(tm,63,"%Y-%m-%d-%H-%M-%S",&now);
-		log_file=malloc(PATH_MAX*sizeof(char*));
-		memset(log_file,0,PATH_MAX*sizeof(char*));
-		snprintf(log_file,PATH_MAX,"%s/adb-%s.log",log_dir,tm);
+		char*tm=malloc(64*sizeof(char));
+		if(tm){
+			memset(tm,0,64*sizeof(char));
+			strftime(tm,63,"%Y-%m-%d-%H-%M-%S",&now);
+			if((log_file=malloc(PATH_MAX*sizeof(char)))){
+				memset(log_file,0,PATH_MAX*sizeof(char));
+				snprintf(log_file,PATH_MAX,"%s/adb-%s.log",log_dir,tm);
+			}
+		}
 	}
 	if((fd=unix_open(log_file,O_WRONLY|O_CREAT|O_TRUNC,0640))<0){
 		perror("adbd: cannot open log file");
