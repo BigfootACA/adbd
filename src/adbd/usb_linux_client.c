@@ -162,16 +162,15 @@ static void usb_adb_init(){
 	if(adb_thread_create(&tid,usb_adb_open_thread,h))fatal_errno("adbd: cannot create usb thread");
 }
 static void init_functionfs(struct usb_handle*h){
-	ssize_t ret;
 	if((h->control=adb_open(USB_FFS_ADB_EP0,O_RDWR))<0) {
 		printf("adbd: %s cannot open control endpoint: %m\n",USB_FFS_ADB_EP0);
 		goto err;
 	}
-	if((ret=adb_write(h->control,&descriptors,sizeof(descriptors)))<0){
+	if(adb_write(h->control,&descriptors,sizeof(descriptors))<0){
 		printf("adbd: %s write descriptors failed: %m\n",USB_FFS_ADB_EP0);
 		goto err;
 	}
-	if((ret=adb_write(h->control,&strings,sizeof(strings)))<0){
+	if(adb_write(h->control,&strings,sizeof(strings))<0){
 		printf("adbd: %s writing strings failed: %m\n",USB_FFS_ADB_EP0);
 		goto err;
 	}
