@@ -40,11 +40,10 @@ static int remount_system(){
 static void write_string(int fd,const char*str){writex(fd,str,strlen(str));}
 void remount_service(int fd,void*cookie){
 	(void)cookie;
-	int ret;
-	if(!(ret=remount_system()))write_string(fd,"remount succeeded\n");
+	if(!remount_system())write_string(fd,"remount succeeded\n");
 	else{
 		char buffer[200];
-		snprintf(buffer,sizeof(buffer),"remount failed: %s\n",strerror(errno));
+		snprintf(buffer,sizeof(buffer),"remount failed: %m\n");
 		write_string(fd,buffer);
 	}
 	adb_close(fd);
