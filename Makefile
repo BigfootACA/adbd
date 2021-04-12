@@ -2,6 +2,13 @@ export CC      ?= $(CROSS_COMPILE)gcc
 export STRIP   ?= $(CROSS_COMPILE)strip
 export CFLAGS  += -O3 -g
 export LDFLAGS +=
+PREFIX?=/usr
+BINDIR?=$(PREFIX)/bin
+LIBDIR?=$(PREFIX)/lib
+SYSCONFDIR?=/etc
+MISCCONFDIR?=$(SYSCONF)/default
+SYSTEMDDIR?=$(LIBDIR)/systemd
+SYSTEMDUNITDIR?=$(SYSTEMDDIR)/system
 LIBS+= -lpthread
 BINS = adbd
 all: all-bin
@@ -23,10 +30,10 @@ adbd_debug: src/main.c src/adbd/adbd.a src/libcutils/libcutils.a
 adbd: adbd_debug
 	$(STRIP) $< -o $@
 install: adbd configs/adbd.conf configs/adbd.service
-	install -Dm0644 configs/adbd.service $(DESTDIR)/usr/lib/systemd/system/adbd.service
-	install -Dm0644 configs/adbd.conf $(DESTDIR)/etc/default/adbd
-	install -Dm0755 adbd $(DESTDIR)/usr/bin/adbd
+	install -Dm0644 configs/adbd.service $(DESTDIR)$(SYSTEMDUNITDIR)/adbd.service
+	install -Dm0644 configs/adbd.conf $(DESTDIR)$(MISCCONFDIR)/adbd
+	install -Dm0755 adbd $(DESTDIR)$(BINDIR)/adbd
 uninstall:
-	rm -fv $(DESTDIR)/usr/lib/systemd/system/adbd.service
-	rm -fv $(DESTDIR)/etc/default/adbd
-	rm -fv $(DESTDIR)/usr/bin/adbd
+	rm -fv $(DESTDIR)$(SYSTEMDUNITDIR)/adbd.service
+	rm -fv $(DESTDIR)$(MISCCONFDIR)/adbd
+	rm -fv $(DESTDIR)$(BINDIR)/adbd
