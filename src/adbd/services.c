@@ -88,7 +88,10 @@ static int create_service_thread(void(*func)(int,void*),void*cookie){
 		printf("adbd: cannot create service socket pair\n");
 		return -1;
 	}
-	if((sti=malloc(sizeof(stinfo)))==0)fatal("adbd: cannot allocate stinfo");
+	if(!(sti=malloc(sizeof(stinfo)))){
+		fatal("adbd: cannot allocate stinfo");
+		return -1;
+	}
 	sti->func=func;
 	sti->cookie=cookie;
 	sti->fd=s[1];
@@ -148,10 +151,10 @@ static int create_subprocess(const char *cmd,const char *arg0,const char *arg1,p
 	}else return ptm;
 }
 static void subproc_waiter_service(int fd,void *cookie){
-	pid_t pid=(pid_t)cookie,p;
+	pid_t pid=(pid_t)cookie;
 	for(;;){
 		int status;
-		if((p=waitpid(pid,&status,0))==pid){
+		if((waitpid(pid,&status,0))==pid){
 			if(WIFSIGNALED(status))printf("adbd: subproc killed by signal %d\n",WTERMSIG(status));
 			else if(!WIFEXITED(status))printf("adbd: subproc did not exit! status %d\n",status);
 			else if(WEXITSTATUS(status)>=0)printf("adbd: subproc exit code %d\n",WEXITSTATUS(status));
@@ -171,11 +174,14 @@ static int create_subproc_thread(const char *name){
 	stinfo *sti;
 	adb_thread_t t;
 	int ret_fd;
-	pid_t pid;
+	pid_t pid=0;
 	ret_fd=name?create_subprocess(shell,"-c",name,&pid):create_subprocess(shell,"-",0,&pid);
 	printf("adbd: create_subprocess fd %d pid %d\n",ret_fd,pid);
 	sti=malloc(sizeof(stinfo));
-	if(sti==0)fatal("adbd: cannot allocate stinfo");
+	if(!sti){
+		fatal("adbd: cannot allocate stinfo");
+		return -1;
+	}
 	sti->func=subproc_waiter_service;
 	sti->cookie=(void*)pid;
 	sti->fd=ret_fd;
@@ -207,8 +213,8 @@ int service_to_fd(const char *name){
 	else if(!strncmp(name,"sync:",5))ret=create_service_thread(file_sync_service,NULL);
 	else if(!strncmp(name,"remount:",8))ret=create_service_thread(remount_service,NULL);
 	else if(!strncmp(name,"reboot:",7)){
-		void*arg=strdup(name + 7);
-		if(arg==0)return -1;
+		void*arg=strdup(name+7);
+		if(!arg)return -1;
 		ret=create_service_thread(reboot_service,arg);
 	}else if(!strncmp(name,"tcpip:",6)){
 		int port;
