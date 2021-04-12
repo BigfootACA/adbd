@@ -26,3 +26,7 @@ install: adbd configs/adbd.conf configs/adbd.service
 	install -Dm0644 configs/adbd.service $(DESTDIR)/usr/lib/systemd/system/adbd.service
 	install -Dm0644 configs/adbd.conf $(DESTDIR)/etc/default/adbd
 	install -Dm0755 adbd $(DESTDIR)/usr/bin/adbd
+uninstall:
+	rm -fv $(DESTDIR)/usr/lib/systemd/system/adbd.service
+	rm -fv $(DESTDIR)/etc/default/adbd
+	rm -fv $(DESTDIR)/usr/bin/adbd
