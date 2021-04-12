@@ -167,7 +167,10 @@ static void local_socket_event_func(int fd,unsigned ev,void*_s){
 }
 asocket*create_local_socket(int fd){
 	asocket*s=calloc(1,sizeof(asocket));
-	if(s==NULL)fatal("adbd: cannot allocate socket");
+	if(!s){
+		fatal("adbd: cannot allocate socket");
+		return NULL;
+	}
 	s->fd=fd;
 	s->enqueue=local_socket_enqueue;
 	s->ready=local_socket_ready;
@@ -214,14 +217,20 @@ static void remote_socket_close(asocket*s){
 }
 static void remote_socket_disconnect(void*_s,atransport*t){
 	asocket*s=_s,*peer=s->peer;
-	if(peer){peer->peer=NULL;peer->close(peer);}
+	if(peer){
+		peer->peer=NULL;
+		peer->close(peer);
+	}
 	remove_transport_disconnect(s->transport,&((aremotesocket*)s)->disconnect);
 	free(s);
 }
 asocket*create_remote_socket(unsigned id,atransport*t){
 	asocket*s=calloc(1,sizeof(aremotesocket));
 	adisconnect*dis=&((aremotesocket*)s)->disconnect;
-	if(s==NULL)fatal("adbd: cannot allocate socket");
+	if(!s){
+		fatal("adbd: cannot allocate socket");
+		return NULL;
+	}
 	s->id=id;
 	s->enqueue=remote_socket_enqueue;
 	s->ready=remote_socket_ready;
@@ -337,7 +346,10 @@ static void smart_socket_close(asocket*s){
 }
 asocket*create_smart_socket(void(*action_cb)(asocket*s,const char*act)){
 	asocket*s=calloc(1,sizeof(asocket));
-	if(s==NULL)fatal("adbd: cannot allocate socket");
+	if(!s){
+		fatal("adbd: cannot allocate socket");
+		return NULL;
+	}
 	s->enqueue=smart_socket_enqueue;
 	s->ready=smart_socket_ready;
 	s->close=smart_socket_close;
