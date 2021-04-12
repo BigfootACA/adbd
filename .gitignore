@@ -1,4 +1,5 @@
 *.o
 *.a
+*.plist
 /adbd
 /adbd_debug
