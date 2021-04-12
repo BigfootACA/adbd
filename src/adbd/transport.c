@@ -30,11 +30,6 @@ void run_transport_disconnects(atransport*t){
 static int read_packet(int fd,const char*name,apacket**ppacket){
 	char*p=(char*)ppacket;
 	int r,len=sizeof(*ppacket);
-	char buff[8];
-	if(!name){
-		snprintf(buff,sizeof(buff),"fd=%d",fd);
-		name=buff;
-	}
 	errno=0;
 	while(len>0)if((r=adb_read(fd,p,len))>0){
 		len-=r;
@@ -48,12 +43,7 @@ static int read_packet(int fd,const char*name,apacket**ppacket){
 static int write_packet(int fd,const char*name,apacket**ppacket){
 	char*p=(char*)ppacket;
 	int r,len=sizeof(ppacket);
-	char buff[8];
 	errno=0;
-	if(!name){
-		snprintf(buff,sizeof(buff),"fd=%d",fd);
-		name=buff;
-	}
 	len=sizeof(ppacket);
 	while(len>0)if((r=adb_write(fd,p,len))>0){
 		len-=r;
