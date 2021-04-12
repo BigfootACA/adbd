@@ -137,7 +137,7 @@ jdwp_process_event(int socket,unsigned events,void*_proc){
 	}
 	if(events&FDE_WRITE){
 		if(proc->out_count>0){
-			int fd=proc->out_fds[0],n,ret;
+			int fd=proc->out_fds[0],n;
 			struct cmsghdr*cmsg;
 			struct msghdr msg;
 			struct iovec iov;
@@ -167,7 +167,7 @@ jdwp_process_event(int socket,unsigned events,void*_proc){
 				goto CloseProcess;
 			}
 			for(;;){
-				if((ret=sendmsg(proc->socket,&msg,0))>=0){adb_close(fd);break;}
+				if(sendmsg(proc->socket,&msg,0)>=0){adb_close(fd);break;}
 				if(errno==EINTR)continue;
 				printf("adbd: sending new file descriptor to JDWP %d failed: %m\n",proc->pid);
 				goto CloseProcess;
@@ -252,7 +252,6 @@ static void jdwp_control_event(int s,unsigned events,void*_control){
 		struct sockaddr addr;
 		socklen_t addrlen=sizeof(addr);
 		int s=-1;
-		JdwpProcess*proc;
 		do{
 			if((s=adb_socket_accept(control->listen_socket,&addr,&addrlen))>=0)continue;
 			if(errno==EINTR)continue;
@@ -263,7 +262,7 @@ static void jdwp_control_event(int s,unsigned events,void*_control){
 			printf("adbd: weird accept failed on jdwp control socket: %m\n");
 			return;
 		}while(s<0);
-		if((proc=jdwp_process_alloc(s))==NULL)return;
+		if(jdwp_process_alloc(s)==NULL)return;
 	}
 }
 static JdwpControl _jdwp_control;
