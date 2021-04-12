@@ -3,3 +3,4 @@
 *.plist
 /adbd
 /adbd_debug
+adbd.service

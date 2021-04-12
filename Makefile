@@ -6,7 +6,7 @@ PREFIX?=/usr
 BINDIR?=$(PREFIX)/bin
 LIBDIR?=$(PREFIX)/lib
 SYSCONFDIR?=/etc
-MISCCONFDIR?=$(SYSCONF)/default
+MISCCONFDIR?=$(SYSCONFDIR)/default
 SYSTEMDDIR?=$(LIBDIR)/systemd
 SYSTEMDUNITDIR?=$(SYSTEMDDIR)/system
 LIBS+= -lpthread
@@ -35,6 +35,16 @@ adbd_debug: src/main.c src/adbd/adbd.a src/libcutils/libcutils.a
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $^ $(LIBS)
 adbd: adbd_debug
 	$(STRIP) $< -o $@
+configs/adbd.service: configs/adbd.service.in
+	sed \
+		-e 's@%PREFIX%@$(PREFIX)@g' \
+		-e 's@%BINDIR%@$(BINDIR)@g' \
+		-e 's@%LIBDIR%@$(LIBDIR)@g' \
+		-e 's@%SYSCONFDIR%@$(SYSCONFDIR)@g' \
+		-e 's@%MISCCONFDIR%@$(MISCCONFDIR)@g' \
+		-e 's@%SYSTEMDDIR%@$(SYSTEMDDIR)@g' \
+		-e 's@%SYSTEMDUNITDIR%@$(SYSTEMDUNITDIR)@g' \
+	$< > $@
 install: adbd configs/adbd.conf configs/adbd.service
 	install -Dm0644 configs/adbd.service $(DESTDIR)$(SYSTEMDUNITDIR)/adbd.service
 	install -Dm0644 configs/adbd.conf $(DESTDIR)$(MISCCONFDIR)/adbd
