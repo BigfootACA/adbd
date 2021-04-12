@@ -12,7 +12,6 @@ SRCS+=framebuffer_service.c
 SRCS+=remount_service.c
 SRCS+=usb_linux_client.c
 SRCS+=log_service.c
-SRCS+=utils.c
 SRCS+=base64.c
 CPPFLAGS+=-Wno-pointer-to-int-cast -Wno-unused-parameter -Wno-int-to-pointer-cast -Wall -Wextra
 CPPFLAGS+=-I. -I../include
