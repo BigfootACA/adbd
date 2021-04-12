@@ -107,8 +107,7 @@ static __inline__ int adb_socket_setbufsize(int fd,int bufsize){int opt=bufsize;
 static __inline__ void disable_tcp_nagle(int fd){int on=1;setsockopt(fd,IPPROTO_TCP,TCP_NODELAY,(void*)&on,sizeof(on));}
 static __inline__ int unix_socketpair(int d,int type,int protocol,int sv[2]){return socketpair(d,type,protocol,sv);}
 static __inline__ int adb_socketpair(int sv[2]){
-	int rc;
-	if((rc=unix_socketpair(AF_UNIX,SOCK_STREAM,0,sv))<0)return -1;
+	if(unix_socketpair(AF_UNIX,SOCK_STREAM,0,sv)<0)return -1;
 	close_on_exec(sv[0]);
 	close_on_exec(sv[1]);
 	return 0;
