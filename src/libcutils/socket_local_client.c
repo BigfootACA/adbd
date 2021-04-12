@@ -42,8 +42,7 @@ error:
 int socket_local_client_connect(int fd,const char*name,int namespaceId,int type){
 	struct sockaddr_un addr;
 	socklen_t alen;
-	int err;
-	if((err=socket_make_sockaddr_un(name,namespaceId,&addr,&alen))<0)goto error;
+	if(socket_make_sockaddr_un(name,namespaceId,&addr,&alen)<0)goto error;
 	if(connect(fd,(struct sockaddr*)&addr,alen)<0)goto error;
 	return fd;
 error:

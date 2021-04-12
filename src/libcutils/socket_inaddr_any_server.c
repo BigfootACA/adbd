@@ -24,10 +24,9 @@ int socket_inaddr_any_server(int port,int type){
 		return -1;
 	}
 	if(type!=SOCK_STREAM)return s;
-	int ret;
-	if((ret=listen(s,LISTEN_BACKLOG))<0){
+	if(listen(s,LISTEN_BACKLOG)<0){
 		close(s);
-		return -1; 
+		return -1;
 	}
 	return s;
 }
