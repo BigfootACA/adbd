@@ -16,11 +16,12 @@ clean-adbd:
 	$(MAKE) -C src/adbd clean
 clean-libcutils:
 	$(MAKE) -C src/libcutils clean
-clean: clean-adbd clean-libcutils
+clean-bins:
 	rm -f adbd adbd_debug
+clean: clean-bins clean-adbd clean-libcutils
 all-bin: $(BINS)
 FORCE:
-.PHONY: all all-bin clean clean-adbd clean-libcutils FORCE install uninstall
+.PHONY: all all-bin clean clean-bins clean-adbd clean-libcutils FORCE install uninstall
 src/adbd/adbd.a: src/adbd/Makefile FORCE
 	$(MAKE) -C src/adbd adbd.a
 src/libcutils/libcutils.a: src/libcutils/Makefile FORCE
