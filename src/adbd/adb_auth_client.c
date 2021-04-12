@@ -107,12 +107,12 @@ void adb_auth_confirm_key(unsigned char *key,size_t len,atransport *t){
 		return;
 	}
 	if((ret=snprintf(msg,sizeof(msg),"PK%s",key))>=(signed)sizeof(msg)){
-		printf("Key too long. ret=%d\n",ret);
+		printf("Key too long: %d\n",ret);
 		return;
 	}
-	printf("Sending '%s'\n",msg);
-	if((ret=unix_write(framework_fd,msg,ret))<0) {
-		printf("Failed to write PK,errno=%d\n",errno);
+	printf("sending '%s'\n",msg);
+	if(unix_write(framework_fd,msg,ret)<0) {
+		perror("failed to write PK");
 		return;
 	}
 	fdevent_install(&t->auth_fde,framework_fd,adb_auth_event,t);
