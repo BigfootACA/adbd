@@ -20,5 +20,7 @@ all: adbd.a
 adbd.a: $(OBJS)
 	$(AR) cr adbd.a $(OBJS)
 clean:
-	rm -f *.o *.a
-.PHONY: clean all
+	rm -f *.o *.a *.plist
+analyze:
+	clang $(CPPFLAGS) --analyze $(SRCS)
+.PHONY: clean all analyze
