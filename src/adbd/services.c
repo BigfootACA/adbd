@@ -216,6 +216,7 @@ int service_to_fd(const char *name){
 		void*arg=strdup(name+7);
 		if(!arg)return -1;
 		ret=create_service_thread(reboot_service,arg);
+		free(arg);
 	}else if(!strncmp(name,"tcpip:",6)){
 		int port;
 		if(sscanf(name+6,"%d",&port)==0)port=0;
