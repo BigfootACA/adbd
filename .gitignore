@@ -1,6 +1,7 @@
 *.o
 *.a
 *.plist
+*.gch
 /adbd
 /adbd_debug
 adbd.service
