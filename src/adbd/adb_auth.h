@@ -1,5 +1,8 @@
 #ifndef __ADB_AUTH_H
 #define __ADB_AUTH_H
+#include<stddef.h>
+#include<sys/types.h>
+#include"adb.h"
 extern void adb_auth_init(void);
 extern void adb_auth_verified(atransport*t);
 #define ADB_AUTH_TOKEN         1

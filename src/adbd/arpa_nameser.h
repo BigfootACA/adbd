@@ -3,6 +3,7 @@
 #ifndef _ARPA_NAMESER_H
 #define _ARPA_NAMESER_H
 #define BIND_4_COMPAT
+#include<stdint.h>
 #include<sys/types.h>
 #include<sys/cdefs.h>
 #define __NAMESER        19991006

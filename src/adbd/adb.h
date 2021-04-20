@@ -1,7 +1,9 @@
 #ifndef __ADB_H
 #define __ADB_H
 #include<limits.h>
+#include<sys/types.h>
 #include"transport.h"
+#include"fdevent.h"
 #define MAX_PAYLOAD 4096
 #define A_SYNC 0x434e5953
 #define A_CNXN 0x4e584e43
