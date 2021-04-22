@@ -62,6 +62,7 @@ static void transport_socket_events(int fd,unsigned events,void*_t){
 	}
 }
 void send_packet(apacket*p,atransport*t){
+	if(!t||!p)return;
 	unsigned char*x;
 	unsigned sum,count;
 	p->msg.magic=p->msg.command^0xffffffff;
@@ -71,7 +72,6 @@ void send_packet(apacket*p,atransport*t){
 	while(count-->0)sum+=*x++;
 	p->msg.data_check=sum;
 	print_packet("send",p);
-	if(t==NULL)errno=0;
 	if(write_packet(t->transport_socket,t->serial,&p))fatal_errno("adbd: cannot enqueue packet on transport socket");
 }
 static void*output_thread(void*_t){
