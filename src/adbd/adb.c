@@ -51,7 +51,10 @@ void fatal_errno(const char*fmt,...){
 }
 apacket*get_apacket(void){
 	apacket*p=malloc(sizeof(apacket));
-	if(p==0)fatal("adbd: failed to allocate an apacket");
+	if(!p){
+		fatal("adbd: failed to allocate an apacket");
+		return NULL;
+	}
 	memset(p,0,sizeof(apacket)-MAX_PAYLOAD);
 	return p;
 }
@@ -101,7 +104,7 @@ static void send_auth_request(atransport*t){
 		printf("adbd: error generating token ret=%d\n",ret);
 		return;
 	}
-	p=get_apacket();
+	if(!(p=get_apacket()))return;
 	memcpy(p->data,t->token,ret);
 	p->msg.command=A_AUTH;
 	p->msg.arg0=ADB_AUTH_TOKEN;
@@ -429,6 +432,11 @@ static install_status_t install_listener(const char*local_name,const char*connec
 	}
 	return INSTALL_STATUS_OK;
 nomem:
+	if(l){
+		if(l->local_name)free(l->local_name);
+		if(l->connect_to)free(l->connect_to);
+		free(l);
+	}
 	fatal("adbd: cannot allocate listener");
 	return INSTALL_STATUS_INTERNAL_ERROR;
 }
@@ -443,14 +451,11 @@ int start_device_log(void){
 		tzset();
 		time(&t);
 		localtime_r(&t,&now);
-		char*tm=malloc(64*sizeof(char));
-		if(tm){
-			memset(tm,0,64*sizeof(char));
-			strftime(tm,63,"%Y-%m-%d-%H-%M-%S",&now);
-			if((log_file=malloc(PATH_MAX*sizeof(char)))){
-				memset(log_file,0,PATH_MAX*sizeof(char));
-				snprintf(log_file,PATH_MAX,"%s/adb-%s.log",log_dir,tm);
-			}
+		char tm[64]={0};
+		strftime(tm,63,"%Y-%m-%d-%H-%M-%S",&now);
+		if((log_file=malloc(PATH_MAX*sizeof(char)))){
+			memset(log_file,0,PATH_MAX*sizeof(char));
+			snprintf(log_file,PATH_MAX,"%s/adb-%s.log",log_dir,tm);
 		}
 	}
 	if((fd=unix_open(log_file,O_WRONLY|O_CREAT|O_TRUNC,0640))<0){
